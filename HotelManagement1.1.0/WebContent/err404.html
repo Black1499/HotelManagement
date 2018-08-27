@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>404错误页面</title>
+<style>
+*{
+	font-family:"微软雅黑";
+	font-size:20px;
+}
+.div_body{
+	width:916px;
+	height:464px;
+	margin:auto;
+	border:none;
+}
+.div_image_body{
+	width:916px;
+	height:464px;
+	margin:auto;
+	border:none;
+	float:left;
+}
+.div_image{
+	width:916px;
+	height:464px;
+	float:left;
+	border:none;
+}
+.input_button{
+	width:261px;
+	height:47px;
+	text-align:center;
+	color:white;
+	float:left;
+	left:295px;
+	top:-129px;
+	position:relative;
+	background-color:#1E90FF;
+	border:none;
+}
+</style>
+</head>
+<body>
+	<div class="div_body">
+		<div class="div_image_body">
+			<img alt="" src="img/404.jpg" class="div_image" >
+			<input type="button" value="返回首页" name="err404" 
+			 class="input_button" id="err1">
+		</div>
+	</div>
+	<script>
+		window.onload=function(){
+			document.getElementById("err1").onclick=function(){
+				window.location.href='hotel_前台.jsp';
+			}
+		}
+	</script>
+</body>
+</html>

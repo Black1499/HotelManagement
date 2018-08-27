@@ -1,0 +1,179 @@
+@charset "utf-8";
+.div_body{
+	width:1340px;
+	height:640px;
+	margin:auto;
+	background-color:#e8eff6;
+	
+}
+.head {
+	position: absolute;
+	top:14%;
+	left: 68%;
+}
+.head img {
+	border-radius:50%;
+	-webkit-border-radius:50%;
+	-o-border-radius:50%;
+	-moz-border-radius:50%;
+	border:6px solid rgba(221, 218, 215, 0.23);
+}
+.div_top{
+	width:1000px;
+	height:130px;
+	margin:0px auto;
+	
+}
+.div_Logo{
+	width:295px;
+	height:132px;
+	background-image:url("../img/LOGO.png");
+}
+
+.div_center{
+	width:1000px;
+	height:350px;
+	border-radius:10px;
+	margin:auto;
+	
+}
+.div_register_body{
+	width:350px;
+	height:320px;
+	float:right;
+	border-radius:10px;
+	/*border:1px solid gray;*/
+	padding:14px;
+	background-color:white;
+	
+}
+.div_register{
+	width:349px;
+	height:262px;
+	background-color:white;
+	margin:auto;
+}
+.div_span{
+	font-family:"微软雅黑";
+	font-size:20px;
+	border:none;
+	border-bottom:2px solid gray;
+	width:340px;
+	height:35px;
+	line-height:25px;
+	margin-top:65px;
+}
+.div_uid_body{
+	width:300px;
+	height:35px;
+	margin:auto;
+	background-color:white;
+	margin-top:25px;
+	border-radius:5px;
+}
+.div_uid{
+	font-family:"微软雅黑";
+	font-size:16px;
+	
+}
+.div_uid_text{
+	width:300px;
+	height:35px;
+	font-size:16px;
+	background-color:white;
+	
+}
+.div_password_body{
+	width:300px;
+	height:35px;
+	margin:auto;
+	
+	background-color:white;
+	margin-top:30px;
+}
+.div_password{
+	font-family:"微软雅黑";
+	font-size:16px;
+	
+}
+.div_password_text{
+	width:300px;
+	height:33px;
+	font-size:16px;
+	background-color:white;
+	
+}
+.div_select_body{
+	width:182px;
+	height:30px;
+	margin:auto;
+	background-color:white;
+	margin-top:30px;
+}
+.div_loginType{
+	font-family:"微软雅黑";
+	font-size:16px;
+	line-height:30px;
+	width:220px;
+}
+.div_select{
+	width:65px;
+	height:30px;
+	float:right;
+	position:relative;
+	right:40px;
+	
+	
+}
+.div_select_option{
+	width:100px;
+	height:30px;
+	position:relative;
+	top:-1px;
+	right:30px;
+	font-family:"微软雅黑";
+	font-size:16px;
+}
+.div_login_button{
+	
+	width:300px;
+	height:40px;
+	margin:auto;
+	border-radius:5px;
+	background-color:white;
+	margin-top:30px;
+}
+.input_login_button{
+	font-family:"微软雅黑";
+	font-size:17px;
+	width:305px;
+	height:40px;
+	text-align:center;
+	border-radius:5px;
+	background-color:#FFB6C1;
+	color:white;
+	margin:auto;
+}
+.div_cancel_button{
+	width:315px;
+	height:40px;
+	margin:auto;
+	border-radius:5px;
+	background-color:white;
+	margin-top:30px;
+	
+}
+.input_cancel_button{
+	font-family:"微软雅黑";
+	width:315px;
+	height:40px;
+	font-size:17px;
+	border-radius:5px;
+	text-align:center;
+	background-color:#FFFFFF;
+	color:black;
+	margin:auto;
+}
+
+
+

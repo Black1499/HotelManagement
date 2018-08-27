@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>500错误页面</title>
+<style>
+*{
+	position:relative;
+	font-family:"微软雅黑";
+	font-size:18px;
+	border:none;
+	
+}
+.div_body{
+	width:916px;
+	height:464px;
+	margin:auto;
+	border:1px solid gray;
+	border:none;
+	
+}
+.div_image_body{
+	width:916px;
+	height:464px;
+	margin:auto;
+	border:1px solid red;
+	float:left;
+	border:none;
+}
+.div_image{
+	width:916px;
+	height:464px;
+	float:left;
+}
+.input_button1{
+	width:108px;
+	height:45px;
+	float:left;
+	left:320px;
+	position:relative;
+	top:-97px;
+	background-color:#F4A460;
+	color:white;
+}
+.input_button2{
+	width:107px;
+	height:45px;
+	float:left;
+	left:368px;
+	position:relative;
+	top:-97px;
+	background-color:#F4A460;
+	color:white;
+}
+</style>
+</head>
+<body>
+	<div class="div_body">
+		<div class="div_image_body">
+			<img alt="" src="img/500.png" class="div_image">
+			<input type="button" value="返回首页" 
+				class="input_button1" name="input_button" id="button1">
+			<input type="button" value="后退一步" 
+				class="input_button2" name="input_button" id="button2">	
+		</div>
+	</div>
+	<script>
+	window.onload=function(){
+		document.getElementById("button1").onclick=function(){
+			window.location.href='roomInfo.jsp';
+		}
+		document.getElementById("button2").onclick=function(){
+			window.history.forward();
+		}
+	}
+	</script>
+</body>
+</html>

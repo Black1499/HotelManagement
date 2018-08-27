@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>数据备份</title>
+<link rel="stylesheet" href="js/layUI/css/layui.css" media="all">
+<style type="text/css">
+.layui-btn-container{
+	margin-top:20px;
+	margin-left:20px;
+	width:400px;
+}
+</style>
+</head>
+<body>
+	<table id="demo" lay-filter="table"></table>
+</body>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="add">备份</a>
+  <a class="layui-btn layui-btn-xs" lay-event="restore">还原</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/javascript" src="js/layUI/layui.all.js"></script>
+<script type="text/javascript" src="js/jQuery/jquery-1.11.3.min.js"></script>
+<script>
+	var backup={
+		table:null,
+		layer:null,
+		useTable:function(){//使用数据表格
+			layui.use('table', function() {
+				backup.table = layui.table;
+				backup.layer= layui.layer;
+			});
+		},
+		blindTable:function(){
+			backup.table.render({
+			    elem: '#demo',
+			    width: 980,	
+			    url: 'BackupTool?action=getData' ,//数据接口
+			    page: false ,//开启分页
+			    cols: [[ //表头
+				    {field: 'dataId', title: '编号',sort:true,width:100},
+				    {field: 'dataName', title: '名称',width:350},
+				    {field: 'dataSize', title: '大小'},
+				    {field: 'dataTime', title: '时间',width:240},
+				    {title:'操作', width:150, align:'center', toolbar: '#barDemo'} 
+			    ]]
+			});
+		},
+		tableOperate:function(){
+			backup.table.on('tool(table)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			  var data = obj.data; //获得当前行数据
+			  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+			  var tr = obj.tr; //获得当前行 tr 的DOM对象
+			 
+			  if(layEvent === 'add'){ //添加备份
+			   	 backup.layer.open({
+			   	    title: '温馨提示',
+			   		content: '是否确定备份当前数据库？',
+			   		yes:function(index, layero){
+						$.post("BackupTool?action=addDataBase",{},function(d){
+							alert(d.msg);
+							backup.layer.close(index);	
+							backup.table.reload('demo',{
+								url:'BackupTool?action=getData'
+							});
+						});
+						
+			   		},
+			   		cancel: function(index, layero){ 
+			   			backup.layer.close(index);
+			   		}
+			   	 });
+			  }else if(layEvent=='restore'){//还原数据库
+				  backup.layer.open({
+				   	    title: '温馨提示',
+				   		content: '是否还原该数据库？',
+				   		yes:function(index, layero){
+				   			$.post("BackupTool?action=restore",{name:data.dataName},function(d){
+				   				alert(d.msg);
+								backup.layer.close(index);	
+								backup.table.reload('demo',{
+									url:'BackupTool?action=getData'
+								});
+				   			});
+				   		},
+				   		cancel: function(index, layero){ 
+				   			backup.layer.close(index);
+				   		}
+				   		
+				   });
+				  
+			  }else if(layEvent === 'del'){ //删除
+				backup.layer.confirm('是否删除该备份数据吗？', function(index){
+			      obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+			      backup.layer.close(index);
+			      //向服务端发送删除指令
+			      $.get("BackupTool?action=del",{id:data.dataId,name:data.dataName},function(d){
+			    	  alert(d.msg);
+			      })
+			      
+			    });
+			  } 
+			});
+		},
+		init:function(){
+			backup.useTable();
+			backup.blindTable();
+			backup.tableOperate();
+		}	
+	}
+	backup.init();
+</script>
+</html>

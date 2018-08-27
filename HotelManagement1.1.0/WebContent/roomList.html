@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>房间列表</title>
+<link rel="stylesheet" href="js/layUI/css/layui.css" media="all">
+<style type="text/css">
+#form * {
+	position: relative;
+	float: left;
+}
+
+#form {
+	width: 450px;
+	height: 400px;
+	background-color:;
+	display: none;
+}
+
+.item {
+	width: 380px;
+	height: 40px;
+	border:;
+	background-color:;
+	margin: 10px 40px 10px 40px;
+	font-size: 18px;
+	line-height: 40px;
+}
+
+input[type=text] {
+	width: 220px;
+	height: 20px;
+	top: 8px;
+}
+
+select {
+	width: 160px;
+	height: 28px;
+	top: 6px;
+}
+
+input[type=radio] {
+	top: 9px;
+	width: 20px;
+	height: 20px;
+	margin-left: 40px;
+}
+
+#remark {
+	width: 220px;
+	height: 80px;
+	top: 8px;
+}
+.layui-btn-container{
+	margin-top:20px;
+	margin-left:20px;
+	width:400px;
+}
+</style>
+</head>
+<body>
+	<div class="layui-btn-container">
+	  <button class="layui-btn layui-btn-radius layui-btn-normal" id="btnChange">房间可入住</button>
+	  <button class="layui-btn layui-btn-danger layui-btn-radius" id="btnDel">批量删除</button> 
+	</div>
+	<table id="demo" lay-filter="table"></table>
+	<form id="form">
+		<div class="item">
+			<label>房间编号：</label> <input type="text" name="roomNum" />
+		</div>
+		<div class="item">
+			<label>房间类型：</label> <select name="roomType">
+			</select>
+		</div>
+		<div class="item">
+			<label>房间电话：</label> <input type="text" name="roomPhone" />
+		</div>
+		<div class="item">
+			<label>是否可用：</label> <input type="radio" name="roomAvailable"
+				value="0" checked /><label>可用</label> <input type="radio"
+				name="roomAvailable" value="1" /><label>不可用</label>
+		</div>
+		<div class="item">
+			<label>房间备注：</label>
+			<textarea id="remark" name="roomRemark"></textarea>
+		</div>
+	</form>
+</body>
+<script type="text/javascript" src="js/layUI/layui.all.js"></script>
+<script type="text/javascript" src="js/jQuery/jquery-1.11.3.min.js"></script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="add">添加</a>
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+	var roomList={
+		table:null,
+		useTable:function(){//使用数据表格
+			layui.use('table', function() {
+				roomList.table = layui.table;
+			});
+		},
+		blindTable:function(){//数据表格渲染
+			roomList.table.render({
+			    elem: '#demo',
+			    width: 980,	
+			    url: 'RoomTool?action=getPage' ,//数据接口
+			    page: false ,//开启分页
+			    cols: [[ //表头
+			    	 {type:'checkbox'},	
+				    {field: 'roomNum', title: '房间编号',sort:true},
+				    {field: 'typeName', title: '房间类型'},
+				    {field: 'typePrice', title: '房间价格',
+				    	 templet: function(d){
+				    		 return d.typePrice+"元/天"
+				    	 }
+				    },
+				    {field: 'typeDeposit', title: '房间押金',
+				    	templet: function(d){
+				    		 return d.typeDeposit+"元/天"
+				    	 }	
+				    },
+				    {field: 'roomPhone', title: '房间电话'},
+				    {field: 'roomAvailable', title: '是否可用',
+				    	templet: function(d){
+				    		if(d.roomAvailable==0)
+				    			return '可用';
+				    		else
+				    			return '<b style="color:red;">不可用</b>';
+				    	}
+				    },
+				    {field: 'roomState', title: '房间状态',
+				    	templet: function(d){
+				    		if(d.roomAvailable==1)
+				    			return '';
+				    		if(d.roomState==0)
+				    			return '可入住';
+				    		else if(d.roomState==1)
+				    			return '<b style="color:blue;">已入住</b>';
+				    		else if(d.roomState==2)
+				    			return '<b style="color:yellow;">被预定</b>';
+				    		else if(d.roomState==3)
+				    			return '<b style="color:green;">被清洁</b>';
+				    	}	
+				    },
+				    {field: 'roomRemark', title: '房价备注'},
+				    {title:'房间操作', width:150, align:'center', toolbar: '#barDemo'} 
+			    ]]
+			});
+		},
+		blindSelect:function(){
+			$.get("RoomTool?action=getType",{},function(data){
+				$.each(data,function(index,obj){
+					var option="<option value="+obj.typeId+">"+obj.typeName+"</option>";
+					$("select[name=roomType]").append(option);
+				});
+			});
+		},
+		judgeRoom:function(){//判断房间是否存在
+			$("input[name=roomNum]").blur(function(){
+				$.post("RoomTool?action=judgeRoom",{roomNum:$("input[name=roomNum]").val()},function(data){
+					if(data.msg){
+						alert(data.msg);
+						$("input[name=roomNum]").val("");
+					}
+				});
+			});
+		},
+		empty:function(){//清空数据
+			$("input[name=roomNum]").val("");
+   			$("input[name=roomPhone]").val("");
+   			$("input[name=roomRemark]").val("");
+		},
+		operateTable:function(){//对数据表格的操作
+			roomList.table.on('tool(table)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			  var data = obj.data; //获得当前行数据
+			  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+			  var tr = obj.tr; //获得当前行 tr 的DOM对象
+			 
+			  if(layEvent === 'add'){ //添加
+				  $("input[name=roomNum]").prop("disabled",false);
+				  layer.open({
+					  type: 1, 
+					  title:'客房添加',
+					  content: $("form"), //这里content是一个普通的String
+					  area: ['450px', '500px'],
+					  btn:['确定','关闭'],
+					  yes: function(index, layero){
+					   	$.post('RoomTool?action=addRoom',$("form").serialize(),function(data){
+					   		alert(data.msg);
+					   		if(confirm("是否继续添加？")){
+					   			roomList.empty();
+					   		}else{
+					   			$("form").css("display","none");
+					   			roomList.empty();
+					   			layer.close(index);
+					   		}
+					   	});
+					  },
+					  btn2: function(index, layero){
+						  $("form").css("display","none");
+						  roomList.empty();
+						  layer.close(index);
+					  },
+					  cancel: function(){ 
+						  $("form").css("display","none");
+						  roomList.empty();
+						  layer.close();
+					  }
+				});
+			  } else if(layEvent === 'del'){ //删除
+			    layer.confirm('是否删除这条数据？', function(index){
+			      obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+			      layer.close(index);
+			      $.post("RoomTool?action=delRoom",{roomNum:data.roomNum},function(data){
+			    	alert(data.msg);
+			      });
+			    });
+			  } else if(layEvent === 'edit'){ //编辑
+				  $("input[name=roomNum]").val(data.roomNum);
+				  $("input[name=roomNum]").attr("disabled","true");
+				  $("select[name=roomType]").html(data.roomType);
+	   			  $("input[name=roomPhone]").val(data.roomPhone);
+	   			  if(data.roomAvailable==0)
+	   			 	 $("input[value=0]").attr("checked","true");
+	   			  else
+	   				 $("input[value=1]").attr("checked","true");
+	   			  $("input[name=roomRemark]").val(data.roomRemark);
+				  layer.open({
+					  type: 1, 
+					  title:'客房编辑',
+					  content: $("form"),
+					  area: ['450px', '500px'],
+					  btn:['确定','关闭'],
+					  yes: function(index, layero){
+					   	$.post('RoomTool?action=updRoom&roomNum='+data.roomNum,$("form").serialize(),function(data){
+					   		alert(data.msg);
+				   			roomList.empty();
+				   			$("form").css("display","none");
+				   			layer.close(index);
+				   			roomList.table.reload('demo', {//表格数据重载
+							  url: 'RoomTool?action=getPage'
+							});
+					   	});
+					  },
+					  btn2: function(index, layero){
+						  $("form").css("display","none");
+						  roomList.empty();
+						  layer.close(index);
+					  },
+					  cancel: function(){ 
+						  $("form").css("display","none");
+						  roomList.empty();
+						  layer.close();
+					  }
+				});	
+			  }
+			});
+		},
+		roomNum:[],
+		stateChange:function(){
+			roomList.table.on('checkbox(table)',function(obj){
+				if(obj.checked){//如果勾选添加至数组
+					if(obj.data.roomState==2 || obj.data.roomState==3 || obj.data.roomState==0){
+						roomList.roomNum=roomList.roomNum.concat(obj.data.roomNum);
+					}
+				}else{//如果不勾选从数组里面删除
+ 					for(var i=0;i<roomList.roomNum.length;i++){
+ 						if(roomList.roomNum[i]==obj.data.roomNum){
+ 							roomList.roomNum.splice(i,1);
+ 							console.log(i);
+ 						}
+					}
+				}
+				
+			});
+			$("#btnDel").click(function(){
+				if(confirm("是否删除这些房间？")){
+					var count=0;
+					$.each(roomList.roomNum,function(i,o){
+						$.post("RoomTool?action=delRoom",{roomNum:o},function(data){
+							if(data.msg){
+								count++;
+							}
+						});
+					});
+					if(count!=roomList.roomNum.length)
+						alert("默认删除未被占用的房间");
+					else
+						alert("删除成功");
+					
+					roomList.table.reload('demo', {//表格数据重载
+						 url: 'RoomTool?action=getPage'
+					});
+					roomList.roomNum=[];
+				}
+			})
+			$("#btnChange").click(function(){
+				if(confirm("是否确定修改选中的被清洁，被预定的房间？")){
+					$.each(roomList.roomNum,function(i,o){
+						$.post("RoomTool?action=stateChage",{roomNum:o},function(){
+						});
+					});
+					roomList.table.reload('demo', {//表格数据重载
+						 url: 'RoomTool?action=getPage'
+					});
+					roomList.roomNum=[];
+				}
+				
+			});
+		
+		},
+		init:function(){
+			roomList.useTable();
+			roomList.blindTable();
+			roomList.blindSelect();
+			roomList.operateTable();
+			roomList.judgeRoom();
+			//roomList.delPart();
+			roomList.stateChange();
+		}
+	}
+	roomList.init();
+</script>
+</html>

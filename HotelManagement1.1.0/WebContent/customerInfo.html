@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>客户信息</title>
+<link rel="stylesheet" href="js/layUI/css/layui.css" media="all">
+<style type="text/css">
+.divForm{
+	margin-top:10px;
+	width:1000px;
+	height:50px;
+	
+}
+.divRadio{
+	width:400px;
+	height:50px;
+	background-color:;
+	margin-top:10px;
+	float:left;
+}
+.divInput{
+	width:500px;
+	height:50px;
+	background-color:;
+	float:left;
+	position:relative;
+	margin-top:10px;
+}
+input[type="text"]{
+	width:300px;
+}
+.layui-btn{
+	float:left;
+	position:relative;
+	left:350px;
+	top:-37px;
+}
+</style>
+</head>
+<body>
+	<form class="layui-form" action="">
+		<div class="divRadio">
+			<div class="layui-form-item" >
+			   <label class="layui-form-label"></label>
+			    <div class="layui-input-block">
+			      <input type="radio" name="cif" value="2" title="全部" checked>
+			      <input type="radio" name="cif" value="0" title="普通" >
+			      <input type="radio" name="cif" value="1" title="VIP" >
+			    </div>
+			</div>
+		</div>
+	</form>
+	<div class="divInput">
+		<div class="layui-form-item">
+		    <label class="layui-form-label"></label>
+		    <div class="layui-input-block">
+		      <input type="text" name="cutName"  placeholder="请输入客户姓名" class="layui-input">
+		 	  <button class="layui-btn" id="btn">查询</button>
+		 	</div>
+		 </div>
+	</div>
+	<table id="demo" lay-filter="table"></table>
+</body>
+<script type="text/javascript" src="js/layUI/layui.all.js"></script>
+<script type="text/javascript" src="js/jQuery/jquery-1.11.3.min.js"></script>
+<script>
+	var cif={
+		table:null,
+		form:null,
+		layer:null,
+		useLayUI:function(){
+			layui.use('table', function() {
+				cif.table = layui.table;
+				cif.form = layui.form;
+				cif.layer = layui.layer;
+			});
+		},
+		blindTable:function(){
+			cif.table.render({
+			    elem: '#demo'
+			    ,width: 980	
+			    ,url: 'CustomerInfoTool?action=getPage' //数据接口
+			    ,page: true //开启分页
+			    ,cols: [[ //表头
+			      {field: 'customerId', title: '客户编号'}
+			      ,{field: 'customerName', title: '客户名字'}
+			      ,{field: 'customerPhone', title: '客户电话'}
+			      ,{field: 'customerIdNum', title: '证件号码'} 
+			      ,{field: 'customerVIP', title: '是否VIP', templet: function(d){
+			    	  if(d.customerVIP==0)
+			    		 	return '<input type=\"checkbox\" disabled/>';
+			    	  else
+			    		  return '<input type=\"checkbox\"/ checked disabled>';
+			    	 }
+			      }
+			      ,{field: 'customerCount', title: '入住次数'}
+// 			      ,{field: 'customerRemark', title: '客户备注'}
+			    ]]
+			});
+		},
+		formClick:function(){
+			cif.form.on('radio()', function(data){
+				var num=data.value;
+				if(num==2){
+					cif.table.reload('demo', {
+						url: 'CustomerInfoTool?action=getPage'
+					});
+				}else if(num==1){
+					cif.table.reload('demo', {
+					  url: 'CustomerInfoTool?action=getVIP',	
+					});
+				}else if(num==0){
+					cif.table.reload('demo', {
+					   url: 'CustomerInfoTool?action=getCut',	
+				    });
+				}
+			});
+			$("#btn").click(function(){
+				var name=$("input[name=cutName]").val();
+				layer.open({
+				  title: '查询提示'
+				  ,content: '查询完毕后，是否导出该信息？'
+				  ,btn: ['查询', '查询并导出']
+				  ,yes: function(index, layero){
+					  cif.table.reload('demo', {
+		 					url: 'CustomerInfoTool?action=getCutName',	
+		 					where:{
+		 						name:name
+		 					}
+		 			   });
+					  cif.layer.close(index);
+				  },btn2: function(index, layero){
+					  cif.table.reload('demo', {
+		 					url: 'CustomerInfoTool?action=getCutName',	
+		 					where:{
+		 						name:name
+		 					}
+		 			  });
+					  cif.layer.close(index);
+					  window.location.href="CustomerInfoTool?action=getCutNameOut&name="+name;
+				  }
+			});   
+ 				
+ 				
+			});    
+		},
+		init:function(){
+			cif.useLayUI();
+			cif.blindTable();
+			cif.formClick();
+		}
+	}
+	cif.init();
+</script>
+</html>

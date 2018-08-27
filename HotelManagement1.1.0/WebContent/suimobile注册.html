@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户注册</title>
+<meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="stylesheet" href="js/suimobile/css/sm.min.css" />
+<link rel="stylesheet" href="js/suimobile/css/sm-extend.min.css" />
+<script type='text/javascript' src='js/suimobile/js/zepto.js' charset='utf-8'></script>
+<script type='text/javascript' src='js/suimobile/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='js/suimobile/js/sm-extend.min.js' charset='utf-8'></script>
+</head>
+<body>
+<header class="bar bar-nav">
+    <a class="button button-link button-nav pull-left back" href="suimobileLogin.html">
+      <span class="icon icon-left"></span>
+     	 返回
+    </a>
+  <h1 class='title'>注册六月酒店账号</h1>
+</header>
+<div class="content">
+  <div class="list-block">
+    <ul>
+      <!-- Text inputs -->
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-name"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">姓名</div>
+            <div class="item-input">
+              <input type="text" placeholder="名字" id="name">
+            </div>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-password"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">密码</div>
+            <div class="item-input">
+              <input type="password" placeholder="密码" id="Password" class="">
+            </div>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-password"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">确认密码</div>
+            <div class="item-input">
+              <input type="password" placeholder="再次输入密码" id="Passwords" class="">
+            </div>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-name"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">证件号码</div>
+            <div class="item-input">
+              <input type="text" placeholder="身份证号" id="idNum">
+            </div>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="item-content">
+          <div class="item-media"><i class="icon icon-form-name"></i></div>
+          <div class="item-inner">
+            <div class="item-title label">手机号码</div>
+            <div class="item-input">
+              <input type="text" placeholder="手机号码" id="phone">
+            </div>
+          </div>
+        </div>
+      </li>
+     </ul>
+  </div>
+  <div class="content-block">
+    <div class="row">
+      <div class="col-50"><a href="suimobileIndex.jsp" id="btnIndex" class="button button-big button-fill button-danger">返回</a></div>
+      <div class="col-50"><a href="#" id="btnRegister" class="button button-big button-fill button-success ">注册</a></div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+	$("#btnRegister").click(function(){
+		if(!$("#name").val()){
+			 $.alert('请输入名字！');
+			 return;
+		}if(!$("#Password").val()){
+			$.alert("请输入密码！");
+			return;
+		}if($("#Password").val()!=$("#Passwords").val()){
+			$.alert("两次输入的密码不一致！");
+			return;
+		}
+		if(!$("#idNum").val()){
+			$.alert("请输入证件号码！");
+			return;
+		}if(!$("#phone").val()){
+			$.alert("请输入手机号码！");
+			return;
+		}
+		//开始发送请求
+		 $.post("cusRegister",{"cusName":$("#name").val(),"Password":$("#Password").val(),
+			 "idNum":$("#idNum").val(),"phone":$("#phone").val()},function(data){
+			 
+				 //$.toast('注册成功，正在跳转...', 2345, 'suimobileIndex.jsp');
+				 $.alert('点击跳转首页！', '注册成功', function () {
+				 window.location.href="suimobileIndex.jsp";
+		     });
+		});
+	});
+	
+	
+	
+	
+	
+
+</script>
+</body>
+</html>
